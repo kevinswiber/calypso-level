@@ -1,0 +1,30 @@
+{
+  "name": "calypso-level",
+  "version": "0.0.1",
+  "description": "A calypso driver for LevelUP-compatible data stores.",
+  "main": "driver.js",
+  "dependencies": {
+    "caql-js-compiler": "~0.0.3"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git://github.com/kevinswiber/calypso-level.git"
+  },
+  "keywords": [
+    "calypso",
+    "levelup",
+    "leveldb",
+    "caql",
+    "query"
+  ],
+  "author": "Kevin Swiber <kswiber@gmail.com>",
+  "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/kevinswiber/calypso-level/issues"
+  },
+  "homepage": "https://github.com/kevinswiber/calypso-level"
+}
