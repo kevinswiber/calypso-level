@@ -4,7 +4,7 @@
   "description": "A calypso driver for LevelUP-compatible data stores.",
   "main": "driver.js",
   "dependencies": {
-    "caql-js-compiler": "~0.0.3"
+    "caql-js-compiler": ">=0.1.0"
   },
   "devDependencies": {},
   "scripts": {
