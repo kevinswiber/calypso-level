@@ -6,7 +6,8 @@ var LevelSession = module.exports = function(collectionMap, cache) {
 };
 
 function convertToModel(config, entity, isBare) {
-  var obj;
+  return entity;
+  /*var obj;
   if (isBare) {
     obj = entity;
   } else {
@@ -33,7 +34,7 @@ function convertToModel(config, entity, isBare) {
     });
   }
 
-  return obj;
+  return obj;*/
 }
 
 LevelSession.prototype.find = function(query, cb) {
@@ -50,13 +51,12 @@ LevelSession.prototype.find = function(query, cb) {
   var db = this.collectionMap[collection];
 
   var compiler = new LevelCompiler(this.cache);
-  var compiled = compiler.compile(query.build());
+  var compiled = compiler.compile(query.build(), query.modelConfig);
 
   var buffer = [];
 
   db.createReadStream({ valueEncoding: 'json' })
     .on('data', function(data) {
-      var result;
       if (result = compiled.filterOne(data.value)) {
         buffer.push(result);
       }
