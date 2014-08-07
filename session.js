@@ -56,9 +56,6 @@ LevelSession.prototype.find = function(query, cb) {
 
   db.createReadStream({ valueEncoding: 'json' })
     .on('data', function(data) {
-      //if (result = compiled.filterOne(data.value)) {
-        //buffer.push(result);
-      //}
       if (result = compiled.filterOne(data.value)) {
         if (query.modelConfig.constructor)
         {
@@ -88,13 +85,13 @@ LevelSession.prototype.get = function(query, id, cb) {
 
   var config = query.modelConfig;
 
-  db.get(id, function(err, value) {
+  db.get(id, { valueEncoding: 'json' }, function(err, value) {
     if (err) {
       cb(err);
       return;
     }
 
-    cb(null, value);
+    cb(null, convertToModel(config, value, config.isBare));
   });
 };
 
