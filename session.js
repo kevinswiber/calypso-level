@@ -5,6 +5,37 @@ var LevelSession = module.exports = function(collectionMap, cache) {
   this.cache = cache || {};
 };
 
+function convertToModel(config, entity, isBare) {
+  var obj;
+  if (isBare) {
+    obj = entity;
+  } else {
+    obj = Object.create(config.constructor.prototype);
+    var keys = Object.keys(config.fieldMap || {});
+    keys.forEach(function(key) {
+      var prop = config.fieldMap[key] || key;
+      if (key.indexOf('.') === -1) {
+        obj[key] = entity[prop];
+      } else {
+        var parts = prop.split('.');
+        var part = parts.reduce(function(prev, cur) {
+          if (Array.isArray(prev)) {
+            return prev.map(function(item) {
+              return item[cur];
+            }); 
+          } else if (prev.hasOwnProperty(cur)) {
+            return prev[cur];
+          }
+        }, entity)
+
+        obj[key] = part;
+      }
+    });
+  }
+
+  return obj;
+}
+
 LevelSession.prototype.find = function(query, cb) {
   if (typeof query === 'function') {
     cb = query;
@@ -25,8 +56,20 @@ LevelSession.prototype.find = function(query, cb) {
 
   db.createReadStream({ valueEncoding: 'json' })
     .on('data', function(data) {
+      //if (result = compiled.filterOne(data.value)) {
+        //buffer.push(result);
+      //}
       if (result = compiled.filterOne(data.value)) {
-        buffer.push(result);
+        if (query.modelConfig.constructor)
+        {
+          if (compiled.fields.length > 0 && (compiled.fields[0].name !== '*' && compiled.fields[0] !== '*')) {
+            buffer.push(result);
+          } else {
+            buffer.push(convertToModel(query.modelConfig, result, false));
+          }
+        } else {
+          buffer.push(result);
+        }
       }
     })
     .on('end', function() {
