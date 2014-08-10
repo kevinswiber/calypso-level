@@ -57,6 +57,7 @@ LevelSession.prototype.find = function(query, cb) {
   db.createReadStream({ valueEncoding: 'json' })
     .on('data', function(data) {
       if (result = compiled.filterOne(data.value)) {
+        data.value.__calypsoKey = data.key;
         if (query.modelConfig.constructor)
         {
           if (compiled.fields.length > 0 && (compiled.fields[0].name !== '*' && compiled.fields[0] !== '*')) {
