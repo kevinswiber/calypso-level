@@ -60,7 +60,7 @@ LevelSession.prototype.find = function(query, cb) {
         data.value.__calypsoKey = data.key;
         if (query.modelConfig.constructor)
         {
-          if (compiled.fields.length > 0 && (compiled.fields[0].name !== '*' && compiled.fields[0] !== '*')) {
+          if (compiled.fields.length > 0 && (compiled.fields[0].name !== '*' || compiled.fields[0] !== '*')) {
             buffer.push(result);
           } else {
             buffer.push(convertToModel(query.modelConfig, result, false));
