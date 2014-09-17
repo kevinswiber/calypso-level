@@ -36,14 +36,35 @@ function convertToModel(config, entity, isBare) {
   return obj;
 }
 
+LevelSession.prototype.match = function(query, value) {
+  var compiler = new LevelCompiler(this.cache);
+  var compiled = compiler.compile(query.build(), query.modelConfig);
+  return (this._match(query, compiled, value));
+};
+
+LevelSession.prototype._match = function(query, compiled, value) {
+  if (result = compiled.filterOne(value)) {
+    if (query.modelConfig.constructor)
+    {
+      if (compiled.fields.length > 0 && (compiled.fields[0].name !== '*' || compiled.fields[0] !== '*')) {
+        return result;
+      } else {
+        return convertToModel(query.modelConfig, result, false);
+      }
+    } else {
+      return result;
+    }
+  }
+
+  return null;
+};
+
+
 LevelSession.prototype.find = function(query, cb) {
+  var self = this;
   if (typeof query === 'function') {
     cb = query;
     query = null;
-  }
-
-  if (!query) {
-    query = 'select *';
   }
 
   var collection = query.modelConfig.collection;
@@ -56,18 +77,9 @@ LevelSession.prototype.find = function(query, cb) {
 
   db.createReadStream({ valueEncoding: 'json' })
     .on('data', function(data) {
-      if (result = compiled.filterOne(data.value)) {
-        data.value.__calypsoKey = data.key;
-        if (query.modelConfig.constructor)
-        {
-          if (compiled.fields.length > 0 && (compiled.fields[0].name !== '*' || compiled.fields[0] !== '*')) {
-            buffer.push(result);
-          } else {
-            buffer.push(convertToModel(query.modelConfig, result, false));
-          }
-        } else {
-          buffer.push(result);
-        }
+      if(result = self._match(query, compiled, data.value)) {
+        result.__calypsoKey = data.key;
+        buffer.push(result);
       }
     })
     .on('end', function() {
