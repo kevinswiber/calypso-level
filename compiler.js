@@ -17,10 +17,11 @@ LevelCompiler.prototype.compile = function(query, modelConfig) {
     var ql = query.value.ql;
     var ast;
     if (this.cache.hasOwnProperty(ql)) {
-      ast = this.cache[ql];
+      ast = this.cache[ql].ast;
+      this.compiler = this.cache[ql].compiler;
     } else {
       ast = this.compiler.compile(ql);
-      this.cache[ql] = ast;
+      this.cache[ql] = { ast: ast, compiler: this.compiler };
     }
   }
 

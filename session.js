@@ -39,7 +39,7 @@ function convertToModel(config, entity, isBare) {
 LevelSession.prototype.match = function(query, value) {
   var compiler = new LevelCompiler(this.cache);
   var compiled = compiler.compile(query.build(), query.modelConfig);
-  return (this._match(query, compiled, value));
+  return this._match(query, compiled, value);
 };
 
 LevelSession.prototype._match = function(query, compiled, value) {
